@@ -6,8 +6,6 @@
   <thead>
     <tr>
       <th>Email</th>
-      <th>Crypted password</th>
-      <th>Salt</th>
       <th>Firstname</th>
       <th>Lastname</th>
       <th>Gender</th>
@@ -24,8 +22,6 @@
     <% @users.each do |user| %>
       <tr>
         <td><%= user.email %></td>
-        <td><%= user.crypted_password %></td>
-        <td><%= user.salt %></td>
         <td><%= user.firstName %></td>
         <td><%= user.lastName %></td>
         <td><%= user.gender %></td>
