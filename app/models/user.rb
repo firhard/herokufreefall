@@ -3,7 +3,7 @@ class User < ApplicationRecord
   has_many :ParkingAddress, :dependent => :destroy
   authenticates_with_sorcery!
   validates_uniqueness_of :identificationCardNumber, :allow_blank => true, :allow_nil => true
-  # validates_uniqueness_of :driverLicense, :allow_blank => true, :allow_nil => true
+  validates_uniqueness_of :driverLicense, :allow_blank => true, :allow_nil => true
   validates :email, uniqueness: true, presence: true
   validates :gender, presence: true
 	
