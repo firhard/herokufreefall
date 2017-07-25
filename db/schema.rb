@@ -17,11 +17,11 @@ ActiveRecord::Schema.define(version: 20170722085136) do
 
   create_table "car_details", force: :cascade do |t|
     t.integer  "user_id"
-    t.string   "carRegistrationNumber"
+    t.string   "carRegistrationNumber", null: false
     t.string   "manufacturer"
     t.string   "model"
-    t.string   "color"
-    t.string   "roadTaxNumber"
+    t.string   "color",                 null: false
+    t.string   "roadTaxNumber",         null: false
     t.datetime "created_at",            null: false
     t.datetime "updated_at",            null: false
     t.index ["user_id"], name: "index_car_details_on_user_id", using: :btree
@@ -33,21 +33,21 @@ ActiveRecord::Schema.define(version: 20170722085136) do
     t.string   "building"
     t.string   "city"
     t.string   "state"
-    t.string   "country"
+    t.string   "country",           default: "malaysia",            null: false
     t.string   "postcode"
     t.string   "additionalDetails"
-    t.float    "monthlyRate"
+    t.float    "monthlyRate",                                       null: false
     t.float    "weeklyRate"
     t.float    "dailyRate"
     t.float    "hourlyRate"
     t.float    "xCoordinates"
     t.float    "yCoordinate"
-    t.boolean  "approval"
+    t.boolean  "approval",          default: false
     t.string   "features"
-    t.boolean  "status"
-    t.datetime "availableFrom"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.boolean  "status",            default: true
+    t.datetime "availableFrom",     default: '2017-07-25 06:54:20'
+    t.datetime "created_at",                                        null: false
+    t.datetime "updated_at",                                        null: false
     t.index ["user_id"], name: "index_parking_addresses_on_user_id", using: :btree
   end
 
@@ -57,27 +57,28 @@ ActiveRecord::Schema.define(version: 20170722085136) do
     t.datetime "rentStart"
     t.datetime "rentEnd"
     t.float    "orderTotal"
-    t.boolean  "status"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+    t.boolean  "status",             default: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
     t.index ["parking_address_id"], name: "index_rental_orders_on_parking_address_id", using: :btree
     t.index ["user_id"], name: "index_rental_orders_on_user_id", using: :btree
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",                    null: false
+    t.string   "email",                                    null: false
     t.string   "crypted_password"
     t.string   "salt"
-    t.string   "firstName"
-    t.string   "lastName"
-    t.string   "gender"
-    t.integer  "age"
+    t.string   "firstName",                                null: false
+    t.string   "lastName",                                 null: false
+    t.string   "gender",                                   null: false
+    t.integer  "age",                                      null: false
     t.string   "identificationCardNumber"
-    t.string   "phoneNumber"
+    t.string   "driverLicense"
+    t.string   "phoneNumber",                              null: false
     t.string   "companyName"
-    t.string   "admin"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.boolean  "admin",                    default: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
   end
 

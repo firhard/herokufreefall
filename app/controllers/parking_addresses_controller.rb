@@ -4,8 +4,9 @@ class ParkingAddressesController < ApplicationController
   # GET /parking_addresses
   # GET /parking_addresses.json
   def index
-    @parking_addresses = ParkingAddress.all
-  end
+    @parking_addresses = ParkingAddress.find_by_userid(session[:current_user_id])
+    @parking_coordinate = ParkingAddress.minimummaximumcoordinate(params[:xmin], params[:xmax], params[:ymin], params[:ymax])
+ end
 
   # GET /parking_addresses/1
   # GET /parking_addresses/1.json

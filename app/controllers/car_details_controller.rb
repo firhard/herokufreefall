@@ -4,7 +4,7 @@ class CarDetailsController < ApplicationController
   # GET /car_details
   # GET /car_details.json
   def index
-    @car_details = CarDetail.all
+    @car_details = CarDetail.find_by_userid(session[:current_user_id])
   end
 
   # GET /car_details/1

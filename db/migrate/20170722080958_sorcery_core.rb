@@ -4,13 +4,13 @@ class SorceryCore < ActiveRecord::Migration[5.0]
       t.string :email,            :null => false
       t.string :crypted_password
       t.string :salt
-      t.string :firstName
-      t.string :lastName
-      t.string :gender
-      t.integer :age
+      t.string :firstName, :null => false
+      t.string :lastName, :null => false
+      t.string :gender, :null => false
+      t.integer :age, :null => false
       t.string :identificationCardNumber
       t.string :driverLicense
-      t.string :phoneNumber
+      t.string :phoneNumber, :null => false
       t.string :companyName
       t.boolean :admin, default: false
 

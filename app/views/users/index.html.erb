@@ -5,38 +5,37 @@
 <table>
   <thead>
     <tr>
+      <th>Id</th>
       <th>Email</th>
-      <th>Firstname</th>
-      <th>Lastname</th>
-      <th>Gender</th>
-      <th>Age</th>
-      <th>Identificationcardnumber</th>
-      <th>DriverLicense</th>
-      <th>Phonenumber</th>
-      <th>Companyname</th>
-      <th>Admin</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>gender</th>
+      <th>age</th>
+      <th>indentificationCardNumber</th>
+      <th>driverLicenseID</th>
+      <th>phoneNumber</th>
+      <th>company</th>
+      <th>admin</th>
       <th colspan="3"></th>
     </tr>
   </thead>
 
   <tbody>
-    <% @users.each do |user| %>
       <tr>
-        <td><%= user.email %></td>
-        <td><%= user.firstName %></td>
-        <td><%= user.lastName %></td>
-        <td><%= user.gender %></td>
-        <td><%= user.age %></td>
-        <td><%= user.identificationCardNumber %></td>
-        <td><%= user.driverLicense %></td>
-        <td><%= user.phoneNumber %></td>
-        <td><%= user.companyName %></td>
-        <td><%= user.admin %></td>
-        <td><%= link_to 'Show', user %></td>
-        <td><%= link_to 'Edit', edit_user_path(user) %></td>
-        <td><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= @users.id %></td>
+        <td><%= @users.email %></td>
+        <td><%= @users.firstName %></td>
+        <td><%= @users.lastName %></td>
+        <td><%= @users.gender %></td>
+        <td><%= @users.age %></td>
+        <td><%= @users.indentificationCardNumber %></td>
+        <td><%= @users.driverLicense %></td>
+        <td><%= @users.phoneNumber %></td>
+        <td><%= @users.company %></td>
+        <td><%= @users.admin %></td>
+        <td><%= link_to 'Show', @users %></td>
+        <td><%= link_to 'Destroy', @users, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
-    <% end %>
   </tbody>
 </table>
 

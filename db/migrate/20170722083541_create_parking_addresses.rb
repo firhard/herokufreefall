@@ -18,7 +18,7 @@ class CreateParkingAddresses < ActiveRecord::Migration[5.0]
       t.boolean :approval, default: false
       t.string :features
       t.boolean :status, default: true
-      t.timestamp :availableFrom
+      t.timestamp :availableFrom, default: Time.now
 
       t.timestamps
     end

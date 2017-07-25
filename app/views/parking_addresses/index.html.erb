@@ -1,61 +1,325 @@
+
 <p id="notice"><%= notice %></p>
 
 <h1>Parking Addresses</h1>
 
-<table>
-  <thead>
+<head>
+  <title>Geolocation</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+
+
+
+  <style>
+  /* Always set the map height explicitly to define the size of the div
+   * element that contains the map. */
+
+  /* Optional: Makes the sample page fill the window. */
+  html, body {
+    height:100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  #parkingmenu {
+    margin:1em 0px;
+    background:none;
+  }
+
+  #title{
+    height:30%;
+    font-size:xx-large;
+    background-color:#cc0000;
+  }
+
+  #leftcolumn{
+    float:left;
+    width: 25%;
+  }
+
+  button{
+    margin:auto;
+    display:block;
+  }
+
+  #addressDisplay{
+    vertical-align: text-top;
+  }
+
+  #map {
+    float:right;
+    height: 550px;
+    width: 75%;
+    background-color: grey;
+  }
+
+  #pac-input {
+    background-color: #fff;
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 300;
+    margin-left: 12px;
+    padding: 0 11px 0 13px;
+    text-overflow: ellipsis;
+    width: 400px;
+  }
+
+  #pac-input:focus{
+    border-color: #4d90fe;
+  }
+
+  </style>
+
+</head>
+
+
+<body>
+      <div id="container">
+
+          <div id="leftcolumn" >
+              <div id="title"> ParkIt!</div>
+              <div id="test">test</div>
+              <div id="parkingmenu">
+                  <form method="get" id="chooseZip">
+                    <p>Welcome to ParkItMy! Here you can look for specific parking spots that are available to be booked!</p>
+                    <button type="button" id="searchZip" class="learnButton" onclick="clearMarkers()">Search by Zip Code </button>
+                        <div id="addressDisplay">
+
+                            <ul class="parking">
+                                <li> Parking Address :</li>
+
+                                <li> Price :</li>
+                                <li> Parking Spots Available :</li>
+                            </ul>
+                        </div>
+                  </form>
+              </div>
+          </div>
+
+          <div id="rightcolumn">
+              <div id="googleMap">
+                <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+
+                <div id="map"></div>
+              </div>
+          </div>
+
+      </div>
+
+      <script>
+          var map;
+
+
+          function initAutocomplete() {
+              map = new google.maps.Map(document.getElementById('map'), {
+                  center: {lat: 3.149177, lng: 101.653278},
+                  zoom: 10,
+                  mapTypeId: 'roadmap'
+              });
+
+              var marker = new google.maps.Marker({
+                  position: {
+                      lat: 3.233742,
+                      lng: 101.686252
+                  },
+                  title:"Hello World!"
+              });
+
+//              marker.setMap(map);
+              var markers= [];
+
+              document.getElementById("searchZip").addEventListener("click", function(){
+                  clearMarkers(markers);
+              });
+
+              map.addListener('zoom_changed', function(){
+                  var bounds = map.getBounds();
+                  var ne = bounds.getNorthEast(); // LatLng of the north-east corner
+                  var sw = bounds.getSouthWest(); // LatLng of the south-west corder
+                  var nw = new google.maps.LatLng(ne.lat(), sw.lng());
+                  var se = new google.maps.LatLng(sw.lat(), ne.lng());
+
+                  document.getElementById("test").textContent = ne.lng;
+                  for (var i=0; i<markers.length; i++) {
+                      if (markers[i].xCoordinate > ne) {
+                          markers[i].setMap(null);
+                      }
+                  }
+              });
+
+              // Create the search box and link it to the UI element.
+              var input = document.getElementById('pac-input');
+              var searchBox = new google.maps.places.SearchBox(input);
+              map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+              // Bias the SearchBox results towards current map's viewport.
+
+              var parking_address = [
+                  ['Bangsar', 3.130767, 101.671018],
+                  ['KL Sentral', 3.133529, 101.686541],
+                  ['Putrajaya', 2.933529, 101.686541]
+              ];
+
+              for( i = 0; i < parking_address.length; i++ ) {
+                  var position = new google.maps.LatLng(parking_address[i][1], parking_address[i][2]);
+
+                  marker = new google.maps.Marker({
+                      position: position,
+                      map: map,
+                      title: parking_address[i][0],
+                      xCoordinate: parking_address[i][1],
+                      yCoordinate: parking_address[i][2]
+                  });
+
+                  markers.push(marker);
+
+              }
+
+              map.addListener('click', function() {
+                  setMapOnAll(null);
+              });
+
+              // Listen for the event fired when the user selects a prediction and retrieve
+              // more details for that place.
+              searchBox.addListener('places_changed', function() {
+                  var places = searchBox.getPlaces();
+
+                  if (places.length == 0) {
+                      return;
+                  }
+                  // Clear out the old markers.
+
+                  // For each place, get the icon, name and location.
+                  var bounds = new google.maps.LatLngBounds();
+                  places.forEach(function(place) {
+                      if (!place.geometry) {
+                          console.log("Returned place contains no geometry");
+                          return;
+                      }
+
+                      if (place.geometry.viewport) {
+                          // Only geocodes have viewport.
+                          bounds.union(place.geometry.viewport);
+                      } else {
+                          bounds.extend(place.geometry.location);
+                      }
+                  });
+                  map.fitBounds(bounds);
+              });
+
+              map.addListener('bounds_changed', function() {
+                  searchBox.setBounds(map.getBounds());
+                  mapZoomRefresh(map)
+              });
+          }
+
+          function mapZoomRefresh(){
+              clearMarkers(markers);
+//              setMarkers(markers);
+          }
+
+          function clearMarkers(markers) {
+              for (var i=0; i<markers.length; i++) {
+                  markers[i].setMap(null);
+              }
+          }
+
+          function setMarkers(markers) {
+              var bounds = map.getBounds();
+              var ne = bounds.getNorthEast(); // LatLng of the north-east corner
+              var sw = bounds.getSouthWest(); // LatLng of the south-west corder
+              var nw = new google.maps.LatLng(ne.lat(), sw.lng());
+              var se = new google.maps.LatLng(sw.lat(), ne.lng());
+              for (var i=0; i<markers.length; i++) {
+                  markers[i].setMap(map);
+              }
+          }
+
+          //          function createMarker(lat, lng, id, address) {
+//              var opts = {
+//                  position: {
+//                      lat: lat,
+//                      lng: lng
+//                  },
+//                  map: map,
+//                  store_id: id,
+//                  store_address: address
+//              };
+//
+//              var marker = google.maps.Marker(opts);
+//
+//              return marker;
+//
+//          }
+
+      </script>
+      <script src="//maps.google.com/maps/api/js?key=AIzaSyCEZIW6yFfH9-bS8VBU7MM1Wr_T-kQY4AU"></script>
+
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCEZIW6yFfH9-bS8VBU7MM1Wr_T-kQY4AU&libraries=places&callback=initAutocomplete"
+              async defer></script>
+  <table>
+    <thead>
     <tr>
+      <th>ID</th>
       <th>User</th>
       <th>Address</th>
       <th>Building</th>
       <th>City</th>
       <th>State</th>
       <th>Country</th>
-      <th>Postcode</th>
+      <th>Zipcode</th>
       <th>Additionaldetails</th>
-      <th>Monthlyrate</th>
+      <th>Montlyrate</th>
       <th>Weeklyrate</th>
       <th>Dailyrate</th>
       <th>Hourlyrate</th>
-      <th>Xcoordinates</th>
-      <th>Ycoordinate</th>
-      <th>Approval</th>
+      <th>xCoordinate</th>
+      <th>yCoordinate</th>
+      <th>approval</th>
       <th>Features</th>
       <th>Status</th>
       <th>Availablefrom</th>
+
       <th colspan="3"></th>
     </tr>
-  </thead>
+    </thead>
 
-  <tbody>
+    <tbody>
+
+
+    <%@parking_address_id= []%>
+    <%@parking_address_x= []%>
+    <%@parking_address_y= []%>
     <% @parking_addresses.each do |parking_address| %>
-      <tr>
-        <td><%= parking_address.user %></td>
-        <td><%= parking_address.address %></td>
-        <td><%= parking_address.building %></td>
-        <td><%= parking_address.city %></td>
-        <td><%= parking_address.state %></td>
-        <td><%= parking_address.country %></td>
-        <td><%= parking_address.postcode %></td>
-        <td><%= parking_address.additionalDetails %></td>
-        <td><%= parking_address.monthlyRate %></td>
-        <td><%= parking_address.weeklyRate %></td>
-        <td><%= parking_address.dailyRate %></td>
-        <td><%= parking_address.hourlyRate %></td>
-        <td><%= parking_address.xCoordinates %></td>
-        <td><%= parking_address.yCoordinate %></td>
-        <td><%= parking_address.approval %></td>
-        <td><%= parking_address.features %></td>
-        <td><%= parking_address.status %></td>
-        <td><%= parking_address.availableFrom %></td>
-        <td><%= link_to 'Show', parking_address %></td>
-        <td><%= link_to 'Edit', edit_parking_address_path(parking_address) %></td>
-        <td><%= link_to 'Destroy', parking_address, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
+        <tr>
+          <% @parking_address_id.push(parking_address.id)%>
+          <% @parking_address_x.push(parking_address.xCoordinate)%>
+          <% @parking_address_y.push(parking_address.yCoordinate)%>
+          <td><%= parking_address.id %></td>
+          <td><%= parking_address.user_id %></td>
+          <td><%= parking_address.address %></td>
+          <td><%= parking_address.building %></td>
+          <td><%= parking_address.city %></td>
+          <td><%= parking_address.state %></td>
+          <td><%= parking_address.country %></td>
+          <td><%= parking_address.zipcode %></td>
+          <td><%= parking_address.additionalDetails %></td>
+          <td><%= parking_address.montlyRate %></td>
+          <td><%= parking_address.weeklyRate %></td>
+          <td><%= parking_address.dailyRate %></td>
+          <td><%= parking_address.hourlyRate %></td>
+          <td><%= parking_address.xCoordinate %></td>
+          <td><%= parking_address.yCoordinate %></td>
+          <td><%= parking_address.approval %></td>
+          <td><%= parking_address.features %></td>
+          <td><%= parking_address.status %></td>
+          <td><%= parking_address.availableFrom %></td>
+          <td><%= link_to 'Show', parking_address %></td>
+          <td><%= link_to 'Edit', edit_parking_address_path(parking_address) %></td>
+          <td><%= link_to 'Destroy', parking_address, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        </tr>
     <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Parking Address', new_parking_address_path %>
+    </tbody>
+  </table>
+</body>
+<br />

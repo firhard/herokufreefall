@@ -4,7 +4,9 @@ class RentalOrdersController < ApplicationController
   # GET /rental_orders
   # GET /rental_orders.json
   def index
-    @rental_orders = RentalOrder.all
+    @rental_orders_rent = RentalOrder.find_by_userid(session[:current_user_id])
+    @rental_orders_lease = RentalOrder.find_rentedparking(session[:current_user_id])
+    
   end
 
   # GET /rental_orders/1
