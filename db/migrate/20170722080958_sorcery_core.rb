@@ -9,9 +9,10 @@ class SorceryCore < ActiveRecord::Migration[5.0]
       t.string :gender
       t.integer :age
       t.string :identificationCardNumber
+      t.string :driverLicense
       t.string :phoneNumber
       t.string :companyName
-      t.string :admin
+      t.boolean :admin, default: false
 
       t.timestamps                :null => false
     end

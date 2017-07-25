@@ -12,6 +12,10 @@
 
   <div id="nav">
     <% if current_user %>
+      <%= link_to "Users", :users %>
+      <%= link_to "Car Details", :car_details %>
+      <%= link_to "Rental Orders", :rental_orders %>
+      <%= link_to "Parking Addresses", :parking_addresses %>
       <%= link_to "Edit Profile", edit_user_path(current_user.id) %>
       <%= link_to "Logout", :logout, method: :post %>
     <% else %>

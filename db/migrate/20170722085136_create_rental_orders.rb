@@ -6,7 +6,7 @@ class CreateRentalOrders < ActiveRecord::Migration[5.0]
       t.timestamp :rentStart
       t.timestamp :rentEnd
       t.float :orderTotal
-      t.boolean :status
+      t.boolean :status, default: false
 
       t.timestamps
     end
